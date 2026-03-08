@@ -69,7 +69,7 @@ block.innerHTML=`<h2>${cat}</h2>`;
 categories[cat].forEach(item=>{
 let div=document.createElement("div");
 div.className="item";
-div.innerHTML=`<span>${item.name} (${item.price} руб.)</span><div><input type="number" min="1" value="1" id="qty_${item.name}"><button onclick="addCart('${item.name}',${item.price})">Добавить</button></div>`;
+div.innerHTML=`<span>${item.name} — ${item.price} руб.</span><div><input type="number" min="1" value="1" id="qty_${item.name}"><button onclick="addCart('${item.name}',${item.price})">Добавить</button></div>`;
 block.appendChild(div);
 });
 container.appendChild(block);
