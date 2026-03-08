@@ -18,7 +18,7 @@ h2{margin-top:35px}
 .item{display:flex;justify-content:space-between;align-items:center;background:#111;padding:10px;margin:6px 0;border-radius:8px}
 button{background:#00ffd5;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-weight:bold}
 input{width:60px;padding:4px}
-.cart{position:fixed;right:10px;top:10px;background:#000;padding:15px;border-radius:10px;width:260px}
+.cart{position:fixed;right:10px;top:10px;background:#000;padding:15px;border-radius:10px;width:300px}
 .cart h3{margin-top:0}
 .cartItem{font-size:14px;margin:3px 0}
 .orderBtn{width:100%;margin-top:10px}
@@ -47,20 +47,19 @@ select{width:100%;margin-top:5px;padding:5px}
 
 <script>
 const categories={
-"⚔ Ближний бой":["Кастет","Клюшка для гольфа","Полицейская дубинка","Нож","Бейсбольная бита","Лопата","Кий","Катана","Бензопила"],
-"🔫 Пистолеты":["Пистолет 9мм","Пистолет с глушителем","Desert Eagle"],
-"💥 Дробовики":["Обычный дробовик","Обрез","Скорострельный дробовик"],
-"🔫 Пистолеты‑пулемёты":["UZI","MP5","TEC‑9"],
-"🪖 Штурмовое оружие":["AK‑47","M4"],
-"🎯 Ружья":["Охотничье ружье","Снайперская винтовка"],
-"💣 Взрывчатка":["Граната","Коктейль Молотова"],
-"🔥 Тяжёлое":["RPG","Огнемет","Миниган"],
-"📸 Фото услуги":["Фото персонажа","Фото с автомобилем","Фото с домом/бизнесом","Фото для профиля","RP фотосессия","Премиум фотосет"],
-"🎥 Видео услуги":["Короткий игровой клип","Видео момента","Монтаж клипа","Видео с эффектами","RP сцена","Полный видеоролик"]
+"⚔ Ближний бой":[{"name":"Кастет","price":5},{"name":"Клюшка для гольфа","price":6},{"name":"Полицейская дубинка","price":6},{"name":"Нож","price":7},{"name":"Бейсбольная бита","price":6},{"name":"Лопата","price":7},{"name":"Кий","price":6},{"name":"Катана","price":12},{"name":"Бензопила","price":18}],
+"🔫 Пистолеты":[{"name":"Пистолет 9мм","price":15},{"name":"Пистолет с глушителем","price":18},{"name":"Desert Eagle","price":20}],
+"💥 Дробовики":[{"name":"Обычный дробовик","price":15},{"name":"Обрез","price":15},{"name":"Скорострельный дробовик","price":18}],
+"🔫 Пистолеты-пулемёты":[{"name":"UZI","price":12},{"name":"MP5","price":10},{"name":"TEC-9","price":12}],
+"🪖 Штурмовое оружие":[{"name":"AK-47","price":15},{"name":"M4","price":15}],
+"🎯 Ружья":[{"name":"Охотничье ружье","price":18},{"name":"Снайперская винтовка","price":20}],
+"💣 Взрывчатка":[{"name":"Граната","price":10},{"name":"Коктейль Молотова","price":9}],
+"🔥 Тяжёлое":[{"name":"RPG","price":20},{"name":"Огнемет","price":20},{"name":"Миниган","price":20}],
+"📸 Фото услуги":[{"name":"Фото персонажа","price":2000},{"name":"Фото с автомобилем","price":3000},{"name":"Фото с домом/бизнесом","price":4000},{"name":"Фото для профиля","price":5000},{"name":"RP фотосессия","price":7000},{"name":"Премиум фотосет","price":9000}],
+"🎥 Видео услуги":[{"name":"Короткий игровой клип","price":5000},{"name":"Видео момента","price":7000},{"name":"Монтаж клипа","price":10000},{"name":"Видео с эффектами","price":15000},{"name":"RP сцена","price":20000},{"name":"Полный видеоролик","price":30000}]
 };
 
 let cart={};
-
 const container=document.getElementById("items");
 
 for(let cat in categories){
@@ -70,58 +69,43 @@ block.innerHTML=`<h2>${cat}</h2>`;
 categories[cat].forEach(item=>{
 let div=document.createElement("div");
 div.className="item";
-
-div.innerHTML=`
-<span>${item}</span>
-<div>
-<input type="number" min="1" value="1" id="qty_${item}">
-<button onclick="addCart('${item}')">Добавить</button>
-</div>`;
-
+div.innerHTML=`<span>${item.name} (${item.price} руб.)</span><div><input type="number" min="1" value="1" id="qty_${item.name}"><button onclick="addCart('${item.name}',${item.price})">Добавить</button></div>`;
 block.appendChild(div);
 });
-
 container.appendChild(block);
 }
 
-function addCart(item){
-let qty=document.getElementById("qty_"+item).value;
-cart[item]=(cart[item]||0)+Number(qty);
+function addCart(name,price){
+let qty=document.getElementById('qty_'+name).value;
+cart[name]=(cart[name]||0)+Number(qty);
+cart[name+'_price']=price;
 renderCart();
 }
 
 function renderCart(){
-let list=document.getElementById("cartList");
-list.innerHTML="";
+let list=document.getElementById('cartList');
+list.innerHTML='';
 for(let item in cart){
-let div=document.createElement("div");
-div.className="cartItem";
-div.innerText=`${item} x${cart[item]}`;
+if(item.includes('_price')) continue;
+let div=document.createElement('div');
+let totalPrice=cart[item]*cart[item+'_price'];
+div.className='cartItem';
+div.innerText=`${item} x${cart[item]} = ${totalPrice} руб.`;
 list.appendChild(div);
 }
 }
 
 function sendOrder(){
-if(Object.keys(cart).length===0){alert("Добавьте товар");return}
-
+if(Object.keys(cart).length===0){alert('Добавьте товар'); return;}
 let text="Заказ:%0A";
 for(let item in cart){
-text+=`${item} x${cart[item]}%0A`;
+if(item.includes('_price')) continue;
+text+=`${item} x${cart[item]} = ${cart[item+'_price']*cart[item]} руб.%0A`;
 }
-
-let contact=document.getElementById("contact").value;
-
-if(contact==='tg'){
-window.open(`https://t.me/Superator2208?text=${text}`);
-}
-
-if(contact==='discord'){
-alert('Отправьте в Discord @Superator_games:\n'+decodeURIComponent(text));
-}
-
-if(contact==='gmail'){
-window.location.href=`mailto:akparovmansur29@gmail.com?subject=Заказ&body=${text}`;
-}
+let contact=document.getElementById('contact').value;
+if(contact==='tg') window.open(`https://t.me/Superator2208?text=${text}`);
+if(contact==='discord') alert('Отправьте в Discord @Superator_games:\n'+decodeURIComponent(text));
+if(contact==='gmail') window.location.href=`mailto:akparovmansur29@gmail.com?subject=Заказ&body=${text}`;
 }
 </script>
 
