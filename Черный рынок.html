@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VIP Чёрный Рынок | Grand Mobile</title>
+<style>
+body{
+font-family:Arial;
+margin:0;
+background:url('https://i.imgur.com/0Z8FQ7E.jpeg') center/cover fixed;
+color:white
+}
+.overlay{background:rgba(0,0,0,0.8);min-height:100vh;padding:20px}
+h1{text-align:center;color:#00ffd5}
+h2{margin-top:35px}
+.section{max-width:900px;margin:auto}
+.item{display:flex;justify-content:space-between;align-items:center;background:#111;padding:10px;margin:6px 0;border-radius:8px}
+button{background:#00ffd5;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-weight:bold}
+input{width:60px;padding:4px}
+.cart{position:fixed;right:10px;top:10px;background:#000;padding:15px;border-radius:10px;width:260px}
+.cart h3{margin-top:0}
+.cartItem{font-size:14px;margin:3px 0}
+.orderBtn{width:100%;margin-top:10px}
+select{width:100%;margin-top:5px;padding:5px}
+</style>
+</head>
+<body>
+<div class="overlay">
+
+<h1>💎 VIP | ЧЁРНЫЙ РЫНОК ГОРОДА 💎</h1>
+
+<div class="section" id="items"></div>
+
+</div>
+
+<div class="cart">
+<h3>🛒 Заказ</h3>
+<div id="cartList"></div>
+<select id="contact">
+<option value="tg">Telegram</option>
+<option value="discord">Discord</option>
+<option value="gmail">Gmail</option>
+</select>
+<button class="orderBtn" onclick="sendOrder()">Отправить заказ</button>
+</div>
+
+<script>
+const categories={
+"⚔ Ближний бой":["Кастет","Клюшка для гольфа","Полицейская дубинка","Нож","Бейсбольная бита","Лопата","Кий","Катана","Бензопила"],
+"🔫 Пистолеты":["Пистолет 9мм","Пистолет с глушителем","Desert Eagle"],
+"💥 Дробовики":["Обычный дробовик","Обрез","Скорострельный дробовик"],
+"🔫 Пистолеты‑пулемёты":["UZI","MP5","TEC‑9"],
+"🪖 Штурмовое оружие":["AK‑47","M4"],
+"🎯 Ружья":["Охотничье ружье","Снайперская винтовка"],
+"💣 Взрывчатка":["Граната","Коктейль Молотова"],
+"🔥 Тяжёлое":["RPG","Огнемет","Миниган"],
+"📸 Фото услуги":["Фото персонажа","Фото с автомобилем","Фото с домом/бизнесом","Фото для профиля","RP фотосессия","Премиум фотосет"],
+"🎥 Видео услуги":["Короткий игровой клип","Видео момента","Монтаж клипа","Видео с эффектами","RP сцена","Полный видеоролик"]
+};
+
+let cart={};
+
+const container=document.getElementById("items");
+
+for(let cat in categories){
+let block=document.createElement("div");
+block.innerHTML=`<h2>${cat}</h2>`;
+
+categories[cat].forEach(item=>{
+let div=document.createElement("div");
+div.className="item";
+
+div.innerHTML=`
+<span>${item}</span>
+<div>
+<input type="number" min="1" value="1" id="qty_${item}">
+<button onclick="addCart('${item}')">Добавить</button>
+</div>`;
+
+block.appendChild(div);
+});
+
+container.appendChild(block);
+}
+
+function addCart(item){
+let qty=document.getElementById("qty_"+item).value;
+cart[item]=(cart[item]||0)+Number(qty);
+renderCart();
+}
+
+function renderCart(){
+let list=document.getElementById("cartList");
+list.innerHTML="";
+for(let item in cart){
+let div=document.createElement("div");
+div.className="cartItem";
+div.innerText=`${item} x${cart[item]}`;
+list.appendChild(div);
+}
+}
+
+function sendOrder(){
+if(Object.keys(cart).length===0){alert("Добавьте товар");return}
+
+let text="Заказ:%0A";
+for(let item in cart){
+text+=`${item} x${cart[item]}%0A`;
+}
+
+let contact=document.getElementById("contact").value;
+
+if(contact==='tg'){
+window.open(`https://t.me/Superator2208?text=${text}`);
+}
+
+if(contact==='discord'){
+alert('Отправьте в Discord @Superator_games:\n'+decodeURIComponent(text));
+}
+
+if(contact==='gmail'){
+window.location.href=`mailto:akparovmansur29@gmail.com?subject=Заказ&body=${text}`;
+}
+}
+</script>
+
+</body>
+</html>
